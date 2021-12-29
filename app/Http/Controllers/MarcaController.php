@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marca;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
 class MarcaController extends Controller
@@ -91,7 +92,9 @@ class MarcaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $Marca = Marca::find($id);
+
+        return view('modificarMarca', [ 'Marca' => $Marca]);
     }
 
     /**
@@ -101,9 +104,46 @@ class MarcaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        // validation
+        $this->validarForm($request);
+
+        // obtener datos de una marca por ID
+        $Marca = Marca::find($request->idMarca);
+
+        // modificar atributos 
+        $Marca->mkNombre = $request->mkNombre;
+
+        // guardar
+        $Marca->save();
+
+        // redireccion
+        return redirect('/adminMarcas')
+            ->with(['mensaje' => 'Marca: ' .$request->mkNombre. ' agregada correctamente']);
+    }
+
+    private function productoPorMarca($idMarca)
+    {
+        $check = Producto::where('idMarca', $idMarca)->first();
+        return $check;
+    } 
+
+
+    public function confirmarBaja($id) 
+    {   
+        // obtener datos de una marca por ID
+        $Marca = Marca::find($id);
+        
+        // caso que no tenga productos la marca se puede borrar
+        if ( !$this->productoPorMarca($id) ) {
+            return view('/eliminarMarca', [ 'Marca' => $Marca]);
+        }
+        
+        // redireccion caso que no se pueda borrar porque tiene productos la marca
+        return redirect('/adminMarcas')
+            ->with(['mensaje' => 'No se puede borrar la marca ' .$Marca->mkNombre]);
+
     }
 
     /**
