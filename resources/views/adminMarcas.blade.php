@@ -4,11 +4,11 @@
 
         <h1>Panel de administración de marcas</h1>
 
-        @if ( session('mensaje') )
-            <div class="alert alert-success">
-                {{ session('mensaje') }}
-            </div>
-        @endif
+        @if ( session('mensaje') ) 
+        <div class="alert alert-{{ session('alert') ?? 'success' }}"> 
+            {{ session('mensaje') }} </div> 
+        
+        @endif 
 
         <table class="table table-borderless table-striped table-hover">
             <thead>

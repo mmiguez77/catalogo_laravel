@@ -141,9 +141,11 @@ class MarcaController extends Controller
         }
         
         // redireccion caso que no se pueda borrar porque tiene productos la marca
-        return redirect('/adminMarcas')
-            ->with(['mensaje' => 'No se puede borrar la marca ' .$Marca->mkNombre]);
-
+        return redirect('/adminMarcas') 
+            ->with([ 
+                'mensaje' => 'La marca ' . $Marca->mkNombre . ' no se puede eliminar', 
+                'alert' => 'danger' 
+            ]); 
     }
 
     /**
@@ -152,8 +154,15 @@ class MarcaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        Marca::destroy($request->idMarca);
+
+        return redirect('/adminMarcas')
+            ->with([
+                    'mensaje' => 'Marca: ' .$request->mkNombre. ' eliminada correctamente',
+                    'alert' => 'info'
+            ]);
+
     }
 }
