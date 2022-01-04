@@ -40,9 +40,7 @@
                 <br>
                 
                 Presentacion: <br>
-                <textarea name="prdPresentacion" class="form-control">
-                    {{ ( old('prdPresentacion') ) }}
-                </textarea>
+                <textarea name="prdPresentacion" class="form-control">{{ ( old('prdPresentacion') ) }}</textarea>
                 <br>
                 
                 Stock: <br>
