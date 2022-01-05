@@ -18,13 +18,13 @@
 
         <nav class="container navbar navbar-expand-lg navbar-dark">
             <i class="fab fa-meetup fa-2x mr-2 text-white"></i>
-            <a class="navbar-brand" href="#">{{ env('APP_NAME') }}</a>
+            <a class="navbar-brand" href="/">{{ env('APP_NAME') }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav m-auto">
-                    <a class="nav-item nav-link ml-4" href="#">Inicio</a>
+                    <a class="nav-item nav-link ml-4" href="/">Inicio</a>
                     <a class="nav-item nav-link" href="/adminMarcas">Marcas</a>
                     <a class="nav-item nav-link" href="/adminCategorias">Categorias</a>
                     <a class="nav-item nav-link" href="/adminProductos">Productos</a>

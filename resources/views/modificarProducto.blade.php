@@ -62,6 +62,9 @@
                     <label class="custom-file-label" for="customFileLang" data-browse="Buscar en disco">Seleccionar Archivo: </label>
                 </div>
 
+                <input type="hidden" name="imgActual"
+                        value="{{ $Producto->prdImagen }}"> 
+
                 <input type="hidden" name="idProducto"
                        value="{{ $Producto->idProducto }}">
                 <br>

@@ -13,11 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('portada');
+// });
 
-Route::view('/inicio', 'inicio');
 
 // INICIO CRUD con MVC
 
@@ -38,6 +37,8 @@ Route::delete('/eliminarMarca',[ MarcaController::class, 'destroy']);
 
 // INICIO CRUD PRODUCTOS
 use App\Http\Controllers\ProductoController;
+Route::get('/', [ ProductoController::class, 'portada' ]); 
+
 Route::get('/adminProductos', [ ProductoController::class, 'index' ]); 
 
 Route::get('/agregarProducto', [ ProductoController::class, 'create']);
@@ -45,3 +46,7 @@ Route::post('/agregarProducto', [ ProductoController::class, 'store']);
 
 Route::get('/modificarProducto/{id}', [ ProductoController::class, 'edit']); 
 Route::put('/modificarProducto', [ ProductoController::class, 'update']); 
+
+Route::get('/eliminarProducto/{id}',[ ProductoController::class, 'confirmarBaja' ]);
+Route::delete('/eliminarProducto',[ ProductoController::class, 'destroy']);
+

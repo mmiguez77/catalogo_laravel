@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
+    
+    public function portada()
+    {
+        $productos = Producto::with([ 'getMarca', 'getCategoria' ])->paginate(5);
+        return view('portada', ['productos' => $productos]);
+
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -52,34 +60,40 @@ class ProductoController extends Controller
         //subir img
         $prdImagen = $this->subirImagen($request);
 
-         //instanciamos
-         $Producto = new Producto();
+        //instanciamos
+        $Producto = new Producto();
 
-         //asignamos atributos
-         $Producto->prdNombre = $request->prdNombre;
-         $Producto->prdPrecio = $request->prdPrecio;
-         $Producto->idMarca = $request->idMarca;
-         $Producto->idCategoria = $request->idCategoria;
-         $Producto->prdPresentacion = $request->prdPresentacion;
-         $Producto->prdStock = $request->prdStock;
-         $Producto->prdImagen = $prdImagen;
- 
-         //guardamos
-         $Producto->save();
- 
-         //redireccion
-         return redirect('adminProductos')
+        //asignamos atributos
+        $Producto->prdNombre = $request->prdNombre;
+        $Producto->prdPrecio = $request->prdPrecio;
+        $Producto->idMarca = $request->idMarca;
+        $Producto->idCategoria = $request->idCategoria;
+        $Producto->prdPresentacion = $request->prdPresentacion;
+        $Producto->prdStock = $request->prdStock;
+        $Producto->prdImagen = $prdImagen;
+
+        //guardamos
+        $Producto->save();
+
+        //redireccion
+        return redirect('adminProductos')
             ->with(['mensaje' => 'Producto: '.$request->prdNombre.' agregado']);
 
     }
 
     private function subirImagen(Request $request) {
 
-        //si no se envia la imagen
-        $prdImagen = 'noDisponible.jpg';
+            //si no se envia la imagen
+            $prdImagen = 'noDisponible.jpg';
 
-        //si se envia la imagen
-        if ( $request->file('prdImagen') ) {
+            //sólo en formulario de modificar
+            if( $request->has('imgActual') ){
+                $prdImagen = $request->imgActual;
+            } 
+
+            //si se envia la imagen
+            if ( $request->file('prdImagen') ) {
+
             //renombrar
             $extension = $request->file('prdImagen')->extension();
             $prdImagen = time().'.'.$extension;
@@ -169,7 +183,48 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        //
+        // validarForm
+        $this->validarForm($request);
+
+        // subir Imagen
+        $prdImagen = $this->subirImagen($request);
+
+        // obtener datos de un producto por ID
+        $Producto = Producto::find($request->idProducto);
+
+        // modificar atributos
+        $Producto->prdNombre = $request->prdNombre;
+        $Producto->prdPrecio = $request->prdPrecio;
+        $Producto->idMarca = $request->idMarca;
+        $Producto->idCategoria = $request->idCategoria;
+        $Producto->prdPresentacion = $request->prdPresentacion;
+        $Producto->prdStock = $request->prdStock;
+        $Producto->prdImagen = $prdImagen;
+
+        // guardar un producto
+        $Producto->save();
+        
+        // redireccion
+        return redirect('adminProductos')
+            ->with(['mensaje' => 'Producto: '.$request->prdNombre.' modificado']);
+
+    }
+
+
+    public function confirmarBaja($id) 
+    {   
+        // obtener datos de una marca por ID
+        $Producto = Producto::with([ 'getMarca', 'getCategoria' ])->find($id);
+     
+        // caso que no tenga productos la marca se puede borrar
+        return view('/eliminarProducto', [ 'Producto' => $Producto]);
+               
+        // redireccion caso que no se pueda borrar porque tiene productos la marca
+        return redirect('/adminMarcas') 
+            ->with([ 
+                'mensaje' => 'La marca ' . $Producto->prdNombre . ' no se puede eliminar', 
+                'alert' => 'danger' 
+            ]); 
     }
 
     /**
@@ -178,8 +233,15 @@ class ProductoController extends Controller
      * @param  \App\Models\Producto  $producto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Producto $producto)
+    public function destroy(Request $request)
     {
-        //
+        Producto::destroy($request->idProducto); 
+
+        return redirect('/adminProductos')
+            ->with([
+                    'mensaje' => 'Producto: ' .$request->prdNombre. ' eliminado correctamente',
+                    'alert' => 'info'
+            ]);
+
     }
 }
